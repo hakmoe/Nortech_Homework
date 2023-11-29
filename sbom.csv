@@ -1,0 +1,3 @@
+name,version,type,path
+mender-gui,1.0.0,npm,/home/hkonyehaugmoe/Work_Nortech/gui/package.json
+apache-libcloud,3.3.1,pip,/home/hkonyehaugmoe/Work_Nortech/cf-remote/requirements.txt
