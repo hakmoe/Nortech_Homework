@@ -1,4 +1,6 @@
 # Security / Python Homework - SBOM
+Assumptions: that all subdirectories should be source code repositories
+
 The main file of the repository is the sbom.py file, the rest of the files are files that are used to run the program or are produced by sbom.py file. The sbom file is used to find the different dependencies of a system. The different dependencies are found in the requirement.txt and package.json files that are found in the subdirectories of the specified directory—the specified directory is specified is specified when running the file. The sbom.py is run with
 ```console
 python3 sbom.py path_to_directories

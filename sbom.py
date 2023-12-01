@@ -14,11 +14,19 @@ def find_all_dir_in_dir(dir_path:str):
         directories ([]): an array with all the directories
     """
     directories = []
+    if not os.path.isdir(dir_path):
+        print(f"The path {dir_path} doesn't exist")
+        sys.exit(1)
     # listdir gives all the directories and the files in the directory
     for items in os.listdir(dir_path):
         full_path = os.path.join(dir_path,items)
         if os.path.isdir(full_path):
             directories.append(full_path)
+
+    # quick fix for removing the git directory
+    if f"{dir_path}.git" in directories:
+        directories.remove(f"{dir_path}.git")
+
     return directories
 
 def find_all_txt_or_json(dir_paths:str):
@@ -32,11 +40,17 @@ def find_all_txt_or_json(dir_paths:str):
     """
     paths = []
     for dir_path in dir_paths:
+        found_file = False
         for item in os.listdir(dir_path):
             if item == "requirements.txt":
+                found_file = True
                 paths.append(os.path.join(dir_path, item))
             elif item  == "package.json":
+                found_file = True
                 paths.append(os.path.join(dir_path, item))
+        if not found_file:
+            print(f"The subdirectory {dir_path} wasn't a complete source code repository")
+            sys.exit(1)
     return paths
 
 def makes_csv_file(file_paths:str):
@@ -54,14 +68,18 @@ def makes_csv_file(file_paths:str):
     columns = ['name','version','type','path']
     csv_array = [columns]
     for path in file_paths:
-        if path.endswith('.txt'):
-            text = open(path).read().split('==')
-            csv_array.append([text[0],text[1].replace("\n",""),'pip',path])
-        elif path.endswith('.json'):
-            json_data = json.loads(open(path).read())
-            name = json_data.get('name')
-            version = json_data.get('version')
-            csv_array.append([name,version,'npm',path])
+        try:
+            if path.endswith('requirements.txt'):
+                text = open(path).read().split('==')
+                csv_array.append([text[0],text[1].replace("\n",""),'pip',path])
+            elif path.endswith('package.json'):
+                json_data = json.loads(open(path).read())
+                name = json_data.get('name')
+                version = json_data.get('version')
+                csv_array.append([name,version,'npm',path])
+        except:
+            print(f"The program couldn't convert the file {path} to a row in the csv file")
+            sys.exit(1)
     with open('sbom.csv', mode='w',newline="") as file:
         writer = csv.writer(file)
         for row in csv_array:
@@ -96,9 +114,16 @@ def csv_to_json(csv_path):
 
 
 
+# errors that could be made by the user
+# 1. either the directory isn't specified or it doesn't exist
 
 def main():
-    all_dirs = find_all_dir_in_dir(sys.argv[1])
+    try:
+        dir_path = sys.argv[1]
+    except:
+        print("The directory path wasn't specified.")
+        sys.exit(1)
+    all_dirs = find_all_dir_in_dir(dir_path)
     print(f"Found {len(all_dirs)} repositories")
     find_all = find_all_txt_or_json(all_dirs)
     makes_csv_file(find_all)
