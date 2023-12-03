@@ -8,7 +8,7 @@ python3 sbom.py path_to_directories
 Where the path_to_directories is the path to the directory that contains the subdirectories with the packages. The program than produces a csv file with the format
 | name      | version | command | absolute path |
 | ----------- | ----------- | ----------- | ----------- |
-| mender-gui/home/hkonyehaugmoe/Work_Nortech/gui/package.json      | 1.0.0 | npm | /home/hkonyehaugmoe/Work_Nortech/gui/package.json |
+| mender-gui      | 1.0.0 | npm | /home/hkonyehaugmoe/Work_Nortech/gui/package.json |
 |apache-libcloud|3.3.1|pip|/home/hkonyehaugmoe/Work_Nortech/cf-remote/requirements.txt|
 
 And for each of the subdirectories there are made sbom.json files that contains the the information for the corresponding row.
