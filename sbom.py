@@ -73,7 +73,8 @@ def makes_csv_file(file_paths:str):
                 text = open(path).read().split('==')
                 csv_array.append([text[0],text[1].replace("\n",""),'pip',path])
             elif path.endswith('package.json'):
-                json_data = json.loads(open(path).read())
+                with open(path, 'r') as f:
+                    json_data = json.load(f)
                 name = json_data.get('name')
                 version = json_data.get('version')
                 csv_array.append([name,version,'npm',path])
@@ -85,7 +86,6 @@ def makes_csv_file(file_paths:str):
         for row in csv_array:
             writer.writerow(row)
     print(f"Saved SBOM in csv format to {os.getcwd()}/sbom.csv")
-
 
 
 def csv_to_json(csv_path):
@@ -110,12 +110,9 @@ def csv_to_json(csv_path):
             json_file_path = os.path.join(path,"sbom.json")
             with open(json_file_path, 'w', encoding='utf-8') as json_file:
                     json.dump(row, json_file, ensure_ascii=False, indent=4)
-            print(f"Saved SDOM in JSON format to {json_file_path}")
+            print(f"Saved SBOM in JSON format to {json_file_path}")
 
 
-
-# errors that could be made by the user
-# 1. either the directory isn't specified or it doesn't exist
 
 def main():
     try:
